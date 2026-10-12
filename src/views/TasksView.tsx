@@ -3,6 +3,7 @@ import { addDays, formatDateTime, formatMinutes, formatShort, WEEKDAY_SHORT, ord
 import { doneCountInRange, nextDateOf, weeklyRemaining } from '../domain/planning';
 import type { Task } from '../domain/types';
 import { useStore } from '../data/store';
+import { areaColor } from '../ui/icons';
 import { useUI } from '../ui/ui';
 import { StatusBadge } from './ItemRow';
 import { TaskForm } from './TaskForm';
@@ -92,7 +93,8 @@ export function TasksView() {
         if (list.length === 0) return null;
         return (
           <section key={area.id} aria-label={area.name}>
-            <h2>
+            <h2 className="area-heading">
+              <span className="dot" style={{ background: areaColor(area.order) }} />
               {area.name} {!area.active && <span className="tag">Área oculta</span>}
             </h2>
             <ul className="items">

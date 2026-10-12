@@ -94,7 +94,7 @@ export function TaskForm({ task, close }: { task?: Task; close: () => void }) {
             </select>
           </label>
           <label className="field">
-            <span>Duração planejada (min) *</span>
+            <span>Duração (min) *</span>
             <input type="number" min={1} max={1440} value={minutes} onChange={(e) => setMinutes(e.target.value)} required />
           </label>
           <label className="field">

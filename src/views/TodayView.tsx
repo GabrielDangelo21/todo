@@ -4,6 +4,7 @@ import { bringToTodayCandidates, buildToday, type TodayData } from '../domain/pl
 import type { DueReminder } from '../domain/reminders';
 import { daySeconds, occSeconds } from '../domain/timer';
 import { useNow, useStore } from '../data/store';
+import { areaColor, StatCard } from '../ui/icons';
 import { Modal, useUI } from '../ui/ui';
 import { useItemActions } from '../ui/useItemActions';
 import { ItemRow } from './ItemRow';
@@ -19,16 +20,15 @@ function Totals({ view }: { view: TodayData }) {
     const spent = item.occ ? occSeconds(item.occ.id, data.sessions, now) : 0;
     remaining += Math.max(0, item.task.minutes * 60 - spent);
   }
+  const pending = view.overdueGroups.reduce((n, g) => n + g.items.length, 0);
+  const late = view.deadlines.filter((d) => d.late).length;
   return (
-    <div className="totals" aria-label="Resumo de tempo do dia">
-      <div>
-        <span className="totals-num">{formatDuration(remaining)}</span>
-        <span className="totals-label">ainda previstos</span>
-      </div>
-      <div>
-        <span className="totals-num">{formatDuration(daySeconds(today, data.sessions, now))}</span>
-        <span className="totals-label">registrados hoje</span>
-      </div>
+    <div className="stats" aria-label="Resumo do dia">
+      <StatCard label="Ainda previstos" value={formatDuration(remaining)} tone="cyan" />
+      <StatCard label="Registrados hoje" value={formatDuration(daySeconds(today, data.sessions, now))} tone="green" />
+      <StatCard label="Concluídas hoje" value={String(view.done.length)} tone="violet" />
+      <StatCard label="Pendências" value={String(pending)} tone="amber" />
+      <StatCard label="Prazos vencidos" value={String(late)} tone="red" />
     </div>
   );
 }
@@ -183,8 +183,8 @@ export function TodayView({ missed, clearMissed }: { missed: DueReminder[]; clea
           <h1>Hoje</h1>
           <p className="muted capitalize">{formatLong(today)}</p>
         </div>
-        <Totals view={view} />
       </header>
+      <Totals view={view} />
 
       <section className="card">
         <QuickAdd />
@@ -214,6 +214,7 @@ export function TodayView({ missed, clearMissed }: { missed: DueReminder[]; clea
           {view.overdueGroups.map((g) => (
             <details key={g.area.id} className="group" open={pendingCount <= COLLAPSE_THRESHOLD}>
               <summary>
+                <span className="dot" style={{ background: areaColor(g.area.order) }} />
                 <span className="group-title">{g.area.name}</span>
                 <span className="count">{g.items.length} pendente(s)</span>
               </summary>

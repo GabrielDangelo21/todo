@@ -4,6 +4,7 @@ import { weeklySummary } from '../domain/planning';
 import { daySeconds, sessionSeconds } from '../domain/timer';
 import type { DateStr, Occurrence } from '../domain/types';
 import { useNow, useStore } from '../data/store';
+import { StatCard } from '../ui/icons';
 import { useUI } from '../ui/ui';
 import { useItemActions } from '../ui/useItemActions';
 import { StatusBadge } from './ItemRow';
@@ -117,6 +118,12 @@ export function HistoryView() {
   const summary = weeklySummary(data, weekStart);
   const days: DateStr[] = [];
   for (let d = weekEnd; d >= weekStart; d = addDays(d, -1)) if (d <= today) days.push(d);
+  const weekDone = data.occurrences.filter(
+    (o) => o.status === 'done' && o.doneDate !== null && o.doneDate >= weekStart && o.doneDate <= weekEnd,
+  ).length;
+  const now = new Date();
+  const weekSeconds = days.reduce((n, d) => n + daySeconds(d, data.sessions, now), 0);
+  const goalsMet = summary.filter((r) => r.goal > 0 && r.done >= r.goal).length;
 
   return (
     <div className="view">
@@ -143,6 +150,12 @@ export function HistoryView() {
           </button>
         </div>
       </header>
+
+      <div className="stats" aria-label="Números da semana">
+        <StatCard label="Concluídas na semana" value={String(weekDone)} tone="violet" />
+        <StatCard label="Tempo registrado" value={formatDuration(weekSeconds)} tone="green" />
+        <StatCard label="Metas cumpridas" value={`${goalsMet}/${summary.length}`} tone="cyan" />
+      </div>
 
       <section className="card" aria-labelledby="weekly-title">
         <h2 id="weekly-title">Resumo da semana</h2>

@@ -2,6 +2,7 @@ import { formatClock, formatDateTime, formatDuration, formatMinutes, formatShort
 import type { TodayItem } from '../domain/planning';
 import { occSeconds, runningSession } from '../domain/timer';
 import { useNow, useStore } from '../data/store';
+import { areaColor } from '../ui/icons';
 import { useItemActions } from '../ui/useItemActions';
 
 function LiveSeconds({ occId }: { occId: string }) {
@@ -51,7 +52,10 @@ export function ItemRow({ item, showResume }: { item: TodayItem; showResume?: bo
         </div>
         {task.description && <p className="item-desc">{task.description}</p>}
         <div className="meta">
-          <span className="tag area">{area?.name ?? 'Sem área'}</span>
+          <span className="area-label">
+            <span className="dot" style={{ background: areaColor(area?.order ?? 0) }} />
+            {area?.name ?? 'Sem área'}
+          </span>
           <span>{formatMinutes(task.minutes)} previstos</span>
           {task.dueAt && <span>Prazo: {formatDateTime(task.dueAt)}</span>}
           {occ && (isRunning || recorded > 0) && (
