@@ -12,11 +12,11 @@ export function TaskForm({ task, close }: { task?: Task; close: () => void }) {
 
   const [title, setTitle] = useState(task?.title ?? '');
   const [areaId, setAreaId] = useState(task?.areaId ?? areas[0]?.id ?? '');
-  const [minutes, setMinutes] = useState(String(task?.minutes ?? 15));
+  const [minutes, setMinutes] = useState(task ? String(task.minutes) : '');
   const [description, setDescription] = useState(task?.description ?? '');
   const [kind, setKind] = useState<TaskKind>(task?.kind ?? 'once');
   const [weekdays, setWeekdays] = useState<number[]>(task?.weekdays ?? []);
-  const [timesPerWeek, setTimesPerWeek] = useState(String(task?.timesPerWeek || 3));
+  const [timesPerWeek, setTimesPerWeek] = useState(task?.timesPerWeek ? String(task.timesPerWeek) : '');
   const [priority, setPriority] = useState<Priority>(task?.priority ?? 'normal');
   const [plannedDate, setPlannedDate] = useState(task ? (pendingOnce?.plannedDate ?? '') : today);
   const [dueAt, setDueAt] = useState(task?.dueAt ?? '');
@@ -95,7 +95,7 @@ export function TaskForm({ task, close }: { task?: Task; close: () => void }) {
           </label>
           <label className="field">
             <span>Duração (min) *</span>
-            <input type="number" min={1} max={1440} value={minutes} onChange={(e) => setMinutes(e.target.value)} required />
+            <input type="number" min={1} max={1440} placeholder="15" value={minutes} onChange={(e) => setMinutes(e.target.value)} required />
           </label>
           <label className="field">
             <span>Prioridade</span>
@@ -140,7 +140,7 @@ export function TaskForm({ task, close }: { task?: Task; close: () => void }) {
         {kind === 'weekly' && (
           <label className="field narrow">
             <span>Vezes por semana *</span>
-            <input type="number" min={1} max={7} value={timesPerWeek} onChange={(e) => setTimesPerWeek(e.target.value)} />
+            <input type="number" min={1} max={7} placeholder="3" value={timesPerWeek} onChange={(e) => setTimesPerWeek(e.target.value)} />
           </label>
         )}
 

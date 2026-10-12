@@ -76,7 +76,7 @@ function QuickAdd() {
   const areas = data.areas.filter((a) => a.active).sort((a, b) => a.order - b.order);
   const [title, setTitle] = useState('');
   const [areaId, setAreaId] = useState(areas[0]?.id ?? '');
-  const [minutes, setMinutes] = useState('15');
+  const [minutes, setMinutes] = useState('');
   const valid = title.trim() && areaId && Number(minutes) >= 1;
   return (
     <form
@@ -104,7 +104,7 @@ function QuickAdd() {
       </label>
       <label className="field narrow">
         <span>Minutos</span>
-        <input type="number" min={1} max={1440} value={minutes} onChange={(e) => setMinutes(e.target.value)} required />
+        <input type="number" min={1} max={1440} placeholder="15" value={minutes} onChange={(e) => setMinutes(e.target.value)} required />
       </label>
       <button type="submit" className="btn primary" disabled={!valid}>
         Adicionar
